@@ -1,0 +1,86 @@
+table DateTable
+	lineageTag: bb6ae79d-fb8e-4057-a0df-e3e31faf7125
+
+	column Date
+		formatString: General Date
+		lineageTag: de482141-98c2-435a-b687-ff1c0d77fc31
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: a815cd07-29ea-4075-8ddc-0860cc10624d
+			defaultHierarchy: LocalDateTable_0a542217-28d3-4c2d-9cf7-a570484ffeff.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		formatString: 0
+		lineageTag: 3aadb369-aeb7-476f-8036-31cba97b060f
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Number'
+		formatString: 0
+		lineageTag: 3316f9ca-648d-424d-95a7-b9322b83d185
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Month Number]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Name'
+		lineageTag: 7e24190e-9eff-4f08-9db3-327006cdec09
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month Name]
+		sortByColumn: 'Month Number'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Year'
+		lineageTag: f89f7cd4-e72f-49e8-bbf8-94bca14fc969
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		lineageTag: 6c01d318-5fce-415e-b41f-5cad4ab46fc8
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Quarter]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year-Month
+		lineageTag: cc0e645b-96bc-488e-bb26-307b03770f40
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Year-Month]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DateTable = calculated
+		mode: import
+		source = ```
+				
+				ADDCOLUMNS (
+				    CALENDAR (MIN(LeaveRequest[StartDate]), MAX(LeaveRequest[StartDate])),
+				    "Year", YEAR([Date]),
+				    "Month Number", MONTH([Date]),
+				    "Month Name", FORMAT([Date], "MMMM"),
+				    "Month Year", FORMAT([Date], "MMM YYYY"),
+				    "Quarter", "Q" & FORMAT([Date], "Q"),
+				    "Year-Month", FORMAT([Date], "YYYY-MM")
+				)
+				
+				```
+
+	annotation PBI_Id = 970b28cfcc6140f88c03bf4811fb7d4d
+

@@ -1,0 +1,65 @@
+table LeaveQuestions
+	lineageTag: dbe4c884-0e9f-4007-bd80-5afda9b9500a
+
+	measure username = USERPRINCIPALNAME()
+		lineageTag: 2ffddc9a-0aca-417a-9800-6a6020886b3e
+
+	column Question
+		dataType: string
+		lineageTag: 0b97498c-b024-481d-af75-ceea37ecaaf8
+		summarizeBy: none
+		sourceColumn: Question
+
+		annotation SummarizationSetBy = Automatic
+
+	column Answer
+		dataType: string
+		lineageTag: 1f23c6e2-7f30-42f5-a62b-fd328b01dbb8
+		summarizeBy: none
+		sourceColumn: Answer
+
+		annotation SummarizationSetBy = Automatic
+
+	column LeaveType
+		dataType: string
+		lineageTag: 3c758832-a5a4-4b05-a920-0d25e9d6c6ed
+		summarizeBy: none
+		sourceColumn: LeaveType
+
+		annotation SummarizationSetBy = Automatic
+
+	column LeaveRequestID
+		dataType: double
+		lineageTag: cb2e0d96-9ed0-4a96-8ac8-d8d2e74c2005
+		summarizeBy: count
+		sourceColumn: LeaveRequestID
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ID
+		dataType: int64
+		formatString: 0
+		lineageTag: 15412156-15b9-43e1-be89-98ec44fe2810
+		summarizeBy: count
+		sourceColumn: ID
+
+		annotation SummarizationSetBy = Automatic
+
+	partition LeaveQuestions = m
+		mode: import
+		source =
+				let
+				    Source = SharePoint.Tables("https://amazehealth.sharepoint.com/sites/PBIData", [Implementation="2.0", ViewMode="All"]),
+				    #"ad9a7c35-4f7d-4da5-a6c5-25dd9528ed8d" = Source{[Id="ad9a7c35-4f7d-4da5-a6c5-25dd9528ed8d"]}[Items],
+				    #"Lowercased Text" = Table.TransformColumns(#"ad9a7c35-4f7d-4da5-a6c5-25dd9528ed8d",{{"Question", Text.Lower, type text}}),
+				    #"Filtered Rows" = Table.SelectRows(#"Lowercased Text", each Text.Contains([Question], "hours requesting")),
+				    #"Removed Other Columns" = Table.SelectColumns(#"Filtered Rows",{"Question", "Answer", "LeaveType", "LeaveRequestID", "ID"})
+				in
+				    #"Removed Other Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

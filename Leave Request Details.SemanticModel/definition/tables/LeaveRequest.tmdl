@@ -1,0 +1,357 @@
+table LeaveRequest
+	lineageTag: 6492692f-6505-43ef-963b-5a40efac226d
+
+	measure 'Total Hours' = SUM(LeaveRequest[Hours]) + 0
+		lineageTag: 4b504463-41e3-4844-8c8d-bb9c560b587d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Last Month Hours' = ```
+			
+			VAR CurrentDate = TODAY()
+			VAR StartOfCurrentMonth = DATE(YEAR(CurrentDate), MONTH(CurrentDate), 1)
+			VAR StartOfLastMonth = EDATE(StartOfCurrentMonth, -1)
+			VAR EndOfLastMonth = StartOfCurrentMonth - 1
+			RETURN
+			CALCULATE(
+			    SUM('LeaveRequest'[Hours]),
+			    'LeaveRequest'[StartDate] >= StartOfLastMonth &&
+			    'LeaveRequest'[StartDate] <= EndOfLastMonth
+			) + 0
+			
+			```
+		lineageTag: dba259dc-136a-4507-a7dd-51ae32ab00c1
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Current Month Hours' =
+			
+			VAR CurrentMonth = MONTH(TODAY())
+			VAR CurrentYear = YEAR(TODAY())
+			RETURN
+			CALCULATE(
+			    SUM('LeaveRequest'[Hours]),
+			    MONTH('LeaveRequest'[StartDate]) = CurrentMonth,
+			    YEAR('LeaveRequest'[StartDate]) = CurrentYear
+			)
+		lineageTag: f078264b-7e5f-4b8c-ad46-485afb615e3d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Formatted Percentage Change' = ```
+			
+			VAR Currents = [Current Month Hours]
+			VAR Previous = [Last Month Hours]
+			VAR Change = Currents - Previous
+			VAR Arrow =
+			    SWITCH(
+			        TRUE(),
+			        ISBLANK(Previous), "➖",
+			        Change > 0, " Hours More ",
+			        Change < 0, " Hours Less ",
+			        "➖"
+			    )
+			VAR Color =
+			    SWITCH(
+			        TRUE(),
+			        ISBLANK(Previous), "#808080",      // Gray
+			        Change > 0, "#228B22",             // Green
+			        Change < 0, "#B22222",             // Red
+			        "#000000"                          // Black
+			    )
+			// VAR PercentText = 
+			//     FORMAT(Change, "0.00%")
+			
+			RETURN
+			
+			Abs(Change) & Arrow & "As Compared to Last Month "
+			```
+		lineageTag: f2c57e16-7d73-4a06-8dae-2d54b9493e53
+
+	measure 'Change Color' =
+			
+			VAR Currents = [Current Month Hours]
+			VAR Previous = [Last Month Hours]
+			VAR Change = Currents - Previous
+			
+			RETURN
+			IF(Change> 0 , "#c22333","#32a852")
+		lineageTag: 24cec6d3-f136-41d9-9c09-7dc2d203bb23
+
+	measure 'Total Hours by Hours Updated' = SUM(LeaveRequest[Hours Updated]) + 0
+		lineageTag: 7a593735-fbef-49c2-a01d-1fcf9461f331
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Applicant.title'
+		dataType: string
+		lineageTag: 57e0b017-0f06-493a-af4a-b7b150c0b780
+		summarizeBy: none
+		sourceColumn: Applicant.title
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Applicant.email'
+		dataType: string
+		lineageTag: 03376302-4a49-4d79-ada1-7e46d8d36da2
+		summarizeBy: none
+		sourceColumn: Applicant.email
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Applicant.picture'
+		dataType: string
+		lineageTag: 1a4ebfba-38aa-455d-b39f-3cb8d1b56b88
+		summarizeBy: none
+		sourceColumn: Applicant.picture
+
+		annotation SummarizationSetBy = Automatic
+
+	column TeamName
+		dataType: string
+		lineageTag: 80aa6ee4-7ffc-4386-8088-1ec390ec5e24
+		summarizeBy: none
+		sourceColumn: TeamName
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Employee Type'
+		dataType: string
+		lineageTag: d1e1de92-a2db-4439-b96c-fbad1cf43a4d
+		summarizeBy: none
+		sourceColumn: Employee Type
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: 8830e4bd-c625-4a0e-9ee0-a556df771d33
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Leave Type'
+		dataType: string
+		lineageTag: a9ed47ac-0964-4e53-a041-161ea4930b2b
+		summarizeBy: none
+		sourceColumn: Leave Type
+
+		annotation SummarizationSetBy = Automatic
+
+	column StartDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: f51dd368-4ce8-4613-bf57-1deba7c7d719
+		summarizeBy: none
+		sourceColumn: StartDate
+
+		variation Variation
+			isDefault
+			relationship: c36528be-8709-420d-aca3-814e6be66050
+			defaultHierarchy: LocalDateTable_203e57df-9ce9-4845-aa87-04a5318590b9.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column EndDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 1189dac3-c4ef-45d7-9473-4dcc0fbc8e02
+		summarizeBy: none
+		sourceColumn: EndDate
+
+		variation Variation
+			isDefault
+			relationship: 228d69d0-a761-489d-a56f-a7e1296eee64
+			defaultHierarchy: LocalDateTable_f85509d4-2d2d-44a0-ab4f-fd4ca9589a46.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Days
+		dataType: double
+		lineageTag: ac59f48c-2c7f-41fc-be45-e3a57faf905c
+		summarizeBy: sum
+		sourceColumn: Days
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Hours
+		dataType: double
+		lineageTag: 2e96559e-9f8d-434d-b434-542f97873f02
+		summarizeBy: sum
+		sourceColumn: Hours
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Minutes
+		dataType: double
+		lineageTag: 18f89f50-1ebe-49bc-b955-e431f78e3ac2
+		summarizeBy: sum
+		sourceColumn: Minutes
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Detail
+		dataType: string
+		lineageTag: 04e17dc4-6102-4eea-a043-0cbf99231a2e
+		summarizeBy: none
+		sourceColumn: Detail
+
+		annotation SummarizationSetBy = Automatic
+
+	column From
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 872eb470-39fd-4cb2-babf-92b54f59efe7
+		summarizeBy: none
+		sourceColumn: From
+
+		variation Variation
+			isDefault
+			relationship: dee37608-b14c-4454-b563-a3c1f7d9d45b
+			defaultHierarchy: LocalDateTable_3b47fd45-fe45-4dac-b2c9-d538287c7ef6.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column To
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 5f0f357d-bc43-4778-8d55-7e1a878f3aab
+		summarizeBy: none
+		sourceColumn: To
+
+		variation Variation
+			isDefault
+			relationship: fec18bc2-b554-4c4b-9cd3-e421b9bd22cf
+			defaultHierarchy: LocalDateTable_521b80c1-2611-4875-aab6-4cb9bae1f887.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column AppliedBy
+		dataType: string
+		lineageTag: 16d37390-b86a-489c-b123-c9cf5e14b13f
+		summarizeBy: none
+		sourceColumn: AppliedBy
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Manager.title'
+		dataType: string
+		lineageTag: d6a5c97d-080e-4255-884f-0bdb6d4a6234
+		summarizeBy: none
+		sourceColumn: Manager.title
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Manager.email'
+		dataType: string
+		lineageTag: 17a46093-2296-4823-bfda-99d353e0c468
+		summarizeBy: none
+		sourceColumn: Manager.email
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Manager.picture'
+		dataType: string
+		lineageTag: cb4a7241-e95e-4964-a947-29596cf84c7b
+		summarizeBy: none
+		sourceColumn: Manager.picture
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID
+		dataType: int64
+		formatString: 0
+		lineageTag: d31e0027-8557-40a1-bbec-346dd72a20e3
+		summarizeBy: count
+		sourceColumn: ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Created
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 6c6fb585-2f2e-4e89-9227-d0d152e395f8
+		summarizeBy: none
+		sourceColumn: Created
+
+		variation Variation
+			isDefault
+			relationship: d121c82d-0f7d-466b-9b25-4aea81baea31
+			defaultHierarchy: LocalDateTable_0ee56cde-bf76-4870-9066-41cd14ce1dda.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Flowid
+		dataType: string
+		lineageTag: 00e0750d-248e-46fc-9c9f-a96942f2d5d9
+		summarizeBy: none
+		sourceColumn: Flowid
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'total leave days' = DATEDIFF('LeaveRequest'[StartDate],'LeaveRequest'[EndDate],DAY)
+		formatString: 0
+		lineageTag: e9c2816f-b28b-46e4-a6ec-0f91b39e9363
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column StartDateUpdated = LeaveRequest[StartDate].[Date]
+		formatString: Short Date
+		lineageTag: 5443ce27-d01a-4ac3-b8c2-67df5b2fb69e
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Name' = FORMAT(LeaveRequest[StartDateUpdated],"mmm")
+		lineageTag: 9b700a54-55db-4ed0-b2ab-a9a74e735e5d
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Hours Updated' = IF(LeaveRequest[Hours] = 0 , LeaveRequest[total leave days] * 8 , LeaveRequest[Hours])
+		lineageTag: a4d7d695-221a-4ec2-a7f8-65ab65b2b948
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'LeaveQuestions.Answer'
+		dataType: string
+		lineageTag: 431ef5fa-4ed0-4e2c-b3d9-1ff18aa14510
+		summarizeBy: none
+		sourceColumn: LeaveQuestions.Answer
+
+		annotation SummarizationSetBy = Automatic
+
+	partition LeaveRequest = m
+		mode: import
+		source =
+				let
+				    Source = SharePoint.Tables("https://amazehealth.sharepoint.com/sites/PBIData", [Implementation="2.0", ViewMode="All"]),
+				    #"184c2e5f-f9e4-4f08-8262-84829cb6b207" = Source{[Id="184c2e5f-f9e4-4f08-8262-84829cb6b207"]}[Items],
+				    #"Expanded Applicant" = Table.ExpandListColumn(#"184c2e5f-f9e4-4f08-8262-84829cb6b207", "Applicant"),
+				    #"Expanded Applicant1" = Table.ExpandRecordColumn(#"Expanded Applicant", "Applicant", {"title", "email", "picture"}, {"Applicant.title", "Applicant.email", "Applicant.picture"}),
+				    #"Expanded Manager" = Table.ExpandListColumn(#"Expanded Applicant1", "Manager"),
+				    #"Expanded Manager1" = Table.ExpandRecordColumn(#"Expanded Manager", "Manager", {"title", "email", "picture"}, {"Manager.title", "Manager.email", "Manager.picture"}),
+				    #"Removed Other Columns" = Table.SelectColumns(#"Expanded Manager1",{"Applicant.title", "Applicant.email", "Applicant.picture", "TeamName", "Employee Type", "Status", "Leave Type", "StartDate", "EndDate", "Days", "Hours", "Minutes", "Detail", "From", "To", "AppliedBy", "Manager.title", "Manager.email", "Manager.picture", "ID", "Created", "Flowid"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Removed Other Columns",{{"StartDate", type datetime}, {"EndDate", type datetime}}),
+				    #"Filtered Rows" = Table.SelectRows(#"Changed Type", each [Created] >= #datetime(2025, 1, 1, 0, 0, 0)),
+				    #"Filtered Rows1" = Table.SelectRows(#"Filtered Rows", each ([Status] = "✅ Approved") and ([Leave Type] <> "💻 Offsite Workplace") and ([Flowid] <> "")),
+				    #"Merged Queries" = Table.NestedJoin(#"Filtered Rows1", {"ID"}, LeaveQuestions, {"LeaveRequestID"}, "LeaveQuestions", JoinKind.LeftOuter),
+				    #"Expanded LeaveQuestions" = Table.ExpandTableColumn(#"Merged Queries", "LeaveQuestions", {"Answer"}, {"LeaveQuestions.Answer"})
+				in
+				    #"Expanded LeaveQuestions"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

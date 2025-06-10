@@ -1,0 +1,11 @@
+role SecureData
+	modelPermission: read
+
+	tablePermission LeaveRequest = ```
+			LeaveRequest[Manager.email] = LOWER(USERPRINCIPALNAME()) 
+			|| "abdul.basit@amazehealth.com" = LOWER(USERPRINCIPALNAME()) 
+			|| "bri.vela@amazehealth.com" = LOWER(USERPRINCIPALNAME())
+			```
+
+	annotation PBI_Id = 0a98e1a4807d4c8d81042d784e050456
+

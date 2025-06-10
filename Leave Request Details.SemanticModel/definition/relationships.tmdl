@@ -1,0 +1,34 @@
+relationship dee37608-b14c-4454-b563-a3c1f7d9d45b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: LeaveRequest.From
+	toColumn: LocalDateTable_3b47fd45-fe45-4dac-b2c9-d538287c7ef6.Date
+
+relationship fec18bc2-b554-4c4b-9cd3-e421b9bd22cf
+	joinOnDateBehavior: datePartOnly
+	fromColumn: LeaveRequest.To
+	toColumn: LocalDateTable_521b80c1-2611-4875-aab6-4cb9bae1f887.Date
+
+relationship d121c82d-0f7d-466b-9b25-4aea81baea31
+	joinOnDateBehavior: datePartOnly
+	fromColumn: LeaveRequest.Created
+	toColumn: LocalDateTable_0ee56cde-bf76-4870-9066-41cd14ce1dda.Date
+
+relationship c36528be-8709-420d-aca3-814e6be66050
+	joinOnDateBehavior: datePartOnly
+	fromColumn: LeaveRequest.StartDate
+	toColumn: LocalDateTable_203e57df-9ce9-4845-aa87-04a5318590b9.Date
+
+relationship 228d69d0-a761-489d-a56f-a7e1296eee64
+	joinOnDateBehavior: datePartOnly
+	fromColumn: LeaveRequest.EndDate
+	toColumn: LocalDateTable_f85509d4-2d2d-44a0-ab4f-fd4ca9589a46.Date
+
+relationship a815cd07-29ea-4075-8ddc-0860cc10624d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DateTable.Date
+	toColumn: LocalDateTable_0a542217-28d3-4c2d-9cf7-a570484ffeff.Date
+
+relationship 07c9906c-066c-3ef8-6feb-9ddbe8bdece2
+	fromColumn: LeaveRequest.StartDateUpdated
+	toColumn: DateTable.Date
+

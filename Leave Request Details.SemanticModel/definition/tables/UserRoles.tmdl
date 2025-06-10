@@ -1,0 +1,34 @@
+table UserRoles
+	lineageTag: 3da3fefa-e545-4a31-b618-0ea44ae93585
+
+	column Role
+		lineageTag: 99acb6c1-23e1-4674-a56b-8e747c9bbebf
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Role]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Email
+		lineageTag: ba1fefbf-8f6b-4aa0-b10b-a1e0673cc95d
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Email]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition UserRoles = calculated
+		mode: import
+		source = ```
+				
+				DISTINCT(
+				    UNION(
+				        SELECTCOLUMNS(LeaveRequest, "Role", "Applicant", "Email", LOWER(LeaveRequest[Applicant.email])),
+				        SELECTCOLUMNS(LeaveRequest, "Role", "Manager", "Email", LOWER(LeaveRequest[Manager.Email]))
+				    )
+				)
+				
+				```
+
+	annotation PBI_Id = b0e7287e6c53495e8abd93cd56edd61c
+
