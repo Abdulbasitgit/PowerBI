@@ -24,7 +24,7 @@
   "sections": [
     {
       "config": "{}",
-      "displayName": "Page 1",
+      "displayName": "Details",
       "displayOption": 1,
       "filters": "[{\"name\":\"0708af7bad102ba17788\",\"expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Entity\":\"LeaveRequest\"}},\"Property\":\"Applicant.title\"}},\"filter\":{\"Version\":2,\"From\":[{\"Name\":\"l\",\"Entity\":\"LeaveRequest\",\"Type\":0}],\"Where\":[{\"Condition\":{\"Not\":{\"Expression\":{\"In\":{\"Expressions\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"l\"}},\"Property\":\"Applicant.title\"}}],\"Values\":[[{\"Literal\":{\"Value\":\"null\"}}]]}}}}}]},\"type\":\"Categorical\",\"howCreated\":1,\"objects\":{\"general\":[{\"properties\":{\"isInvertedSelectionMode\":{\"expr\":{\"Literal\":{\"Value\":\"true\"}}}}}]}}]",
       "height": 1000.00,
